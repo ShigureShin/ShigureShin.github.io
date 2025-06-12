@@ -8,8 +8,8 @@ subtitle: ''
 description: ''
 keywords:
 author: Shigure
-language: en
-timezone: ''
+language: 'zh-CN'
+timezone: 'Asia/Shanghai'
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
@@ -103,5 +103,5 @@ theme: butterfly
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  repo: https://github.com/ShigureShin/ShigureShin.github.io
+  repository: git@github.com:ShigureShin/ShigureShin.github.io.git
   branch: main
