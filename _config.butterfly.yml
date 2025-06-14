@@ -17,7 +17,7 @@ menu:
 nav:
   logo: # https://cdn.jsdelivr.net/gh/ShigureShin/pic_bed/imgs/Shigure_Halo.webp # image
   display_title: false
-  fixed: false # fixed navigation bar
+  fixed: true # fixed navigation bar
 
 # Code Blocks (代碼相關)
 # --------------------------------------

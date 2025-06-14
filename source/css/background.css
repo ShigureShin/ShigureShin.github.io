@@ -1,19 +1,8 @@
-/* 仅在文章页面使页脚与头图透明 */
-.post #footer {
-  background: transparent !important;
-}
-.post #page-header {
+#footer {
   background: transparent !important;
 }
 
-/* 白天模式遮罩透明 */
-.post #footer::before,
-.post #page-header::before {
+#page-header {
   background: transparent !important;
 }
 
-/* 夜间模式遮罩透明 */
-.post [data-theme="dark"] #footer::before,
-.post [data-theme="dark"] #page-header::before {
-  background: transparent !important;
-}
