@@ -1,0 +1,50 @@
+<!DOCTYPE html><!--
+所有页面的 HTML 骨架
+    - 防闪烁主题切换脚本（在页面渲染前执行）
+    - 引入全局 CSS
+    - `<slot />` 插槽供子页面填充内容
+--><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>搜索</title><meta name="description" content="搜索文章"><!--
+      网站图标
+      - SVG（主）：现代浏览器优先，支持主题色/动画/高分辨率无损缩放
+      - ICO（回退）：老旧浏览器（IE / 旧 Edge）不支持 SVG favicon
+      浏览器选择规则：type="image/svg+xml" 声明优先级，不支持的自动跳到 ico
+    --><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="alternate icon" href="/favicon.ico"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.jmhnZfFy.js"></script><!--
+      防闪烁主题切换：同步 inline 脚本，在页面渲染前设置 data-theme
+      只在首次硬加载执行（is:inline 不被 Astro 处理，直接内联到 HTML）
+    --><script>
+      const savedTheme = localStorage.getItem("theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const theme = savedTheme || (prefersDark ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    </script><!--
+      View Transitions 导航时保持主题不丢失
+
+      问题：ClientRouter 导航时获取新页面 HTML，新页面的 <html> 带服务端默认
+      data-theme（不含用户选择）。swap 替换 <html> 后主题被覆盖，is:inline
+      脚本不会重新执行 → 无人从 localStorage 恢复。
+
+      解决：监听 astro:before-swap，在 DOM swap 之前把当前主题写入新文档的 <html>。
+      event.newDocument 是即将替换进来的新文档，修改它不影响当前页面。
+      监听器挂在 document 上（swap 只替换 documentElement，不替换 document 本身），
+      所以首次注册后永久有效。
+    --><script type="module">document.addEventListener(`astro:before-swap`,e=>{let t=document.documentElement.getAttribute(`data-theme`);t&&e.newDocument.documentElement.setAttribute(`data-theme`,t)});</script><link rel="stylesheet" href="/_astro/BaseLayout.D-DT_kRs.css"><style>.search-excerpt mark{background:color-mix(in srgb, var(--color-primary) 20%, transparent);color:var(--color-primary);border-radius:2px;padding:0 2px}.search-item{border-radius:.75rem;transition:box-shadow .3s;overflow:hidden}.search-item.expanded{box-shadow:0 4px 6px -2px #00000014,0 12px 20px -6px #0000001f}.result-card{background-color:var(--color-base-100,#fff)}.result-preview{background-color:var(--color-base-00,#f3f4f6);max-height:0;transition:max-height .3s;overflow:hidden}.result-preview.expanded{max-height:320px}.result-chevron{transition:transform .3s}.result-chevron.expanded{transform:rotate(180deg)}
+</style></head><body style="background-image: url('/background.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed; min-height: 100vh;"><!-- 背景遮罩 --><!-- 深色与浅色模式调整为不同遮罩程度 --><!-- 是否渲染遮罩由 site.disableOverlay 控制（默认开启，保持阅读可读性） --><!-- 页面内容插槽 --><!-- 内容层：z-10 在遮罩之上 --><!--
+        不需要 pt-X 给 navbar 占位：Navbar 自己是 sticky 元素，正常参与文档流，
+        在它的源位置（body 顶部）就占满 64px 高，sticky 触发后再贴到 viewport 顶。
+    --><div class="relative z-10"><!--
+    全站 sticky 导航栏
+
+    - sticky top-0 z-30：滚动时吸顶，z-30 高于内容层（默认 z-auto）
+    - 普通页面：bg-base-100/80 backdrop-blur-md border-b shadow-sm → 半透背景 + 模糊 + 底边框 + 阴影
+    - 首页透明模式：去掉 bg/border/shadow，按钮直接浮在背景图上（更干净）
+    - h-16 (64px) + flex items-center：固定高度，items 垂直居中，不会被内容撑高
+
+    与 BaseLayout 的关系：
+    - sticky 元素本身参与 normal flow，占 64px 高度
+    - 不需要在 BaseLayout 加 pt-X 占位（sticky 自己就是占位）
+    - TOC 卡片 top-24 (96px) - navbar 高度 64px = 32px 上间距，匹配"小空间"
+--><header class="sticky top-0 z-30 h-16 bg-base-100/80 backdrop-blur-md border-b border-base-200 shadow-sm"><nav class="max-w-6xl mx-auto px-4 h-full flex items-center justify-center gap-2"><a href="/" class="btn btn-ghost btn-sm">首页</a><a href="/blog" class="btn btn-ghost btn-sm">博客</a><a href="/tags" class="btn btn-ghost btn-sm">标签</a><a href="/search" class="btn btn-ghost btn-sm btn-active">搜索</a><a href="/about" class="btn btn-ghost btn-sm">关于</a></nav></header><main class="min-h-screen max-w-3xl mx-auto px-4 py-12" data-astro-cid-wp2l4cmv><!-- 页面标题 --><header class="mb-8" data-astro-cid-wp2l4cmv><h1 class="text-3xl font-bold mb-2" data-astro-cid-wp2l4cmv>搜索</h1><p class="opacity-60" data-astro-cid-wp2l4cmv>搜索文章</p></header><!-- 搜索输入框 --><div class="relative mb-6" data-astro-cid-wp2l4cmv><svg width="1em" height="1em" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 opacity-40 pointer-events-none" data-astro-cid-wp2l4cmv="true" data-icon="lucide:search"><symbol id="ai:lucide:search" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="m21 21l-4.34-4.34"/><circle cx="11" cy="11" r="8"/></g></symbol><use href="#ai:lucide:search"></use></svg><input type="text" id="search-input" class="input input-bordered w-full pl-12 text-lg" placeholder="输入关键词..." data-no-results="没有找到相关文章" data-result-count="找到 {count} 篇相关文章" data-dev-hint="搜索功能仅在构建后可用，请运行 npm run build &amp;&amp; npm run preview" data-view-detail="点击查看文章详情" data-loading="加载中..." data-load-failed="加载失败，请直接查看全文" autocomplete="off" data-astro-cid-wp2l4cmv></div><!-- 搜索状态栏（结果计数 / dev 提示） --><div id="search-status" class="mb-4 text-sm opacity-60" data-astro-cid-wp2l4cmv></div><!--
+      搜索结果列表
+      独立设计：紧凑可展开卡片，不与 PostCard 结构对齐
+      每项 = result-card（点击展开/收起预览）+ result-preview（卷帘动画）
+    --><div id="search-results" class="space-y-3" data-astro-cid-wp2l4cmv></div><!-- 初始空状态（未输入关键词时显示） --><div id="search-initial" class="text-center py-16 opacity-40" data-astro-cid-wp2l4cmv><svg width="1em" height="1em" viewBox="0 0 24 24" class="w-12 h-12 mx-auto mb-4" data-astro-cid-wp2l4cmv="true" data-icon="lucide:search"><use href="#ai:lucide:search"></use></svg><p data-astro-cid-wp2l4cmv>输入关键词...</p></div></main></div><!-- 主题切换按钮 --><!-- 主题切换组件 --><button id="theme-toggle" class="btn btn-ghost btn-circle fixed top-4 right-4 z-50" aria-label="切换主题"><!-- 深色模式下显示太阳（点击切回浅色） --><svg width="1em" height="1em" class="w-5 h-5 hidden dark:block" data-icon="lucide:sun"><symbol id="ai:lucide:sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></symbol><use href="#ai:lucide:sun"></use></svg><!-- 浅色模式下显示月亮（点击切到深色） --><svg width="1em" height="1em" class="w-5 h-5 block dark:hidden" data-icon="lucide:moon"><symbol id="ai:lucide:moon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></symbol><use href="#ai:lucide:moon"></use></svg></button><script type="module">function e(){let e=document.documentElement,t=e.getAttribute(`data-theme`)===`dark`?`light`:`dark`;e.setAttribute(`data-theme`,t),localStorage.setItem(`theme`,t)}function t(){document.getElementById(`theme-toggle`)?.addEventListener(`click`,e)}t(),document.addEventListener(`astro:page-load`,t);</script></body></html><script type="module" src="/_astro/search.astro_astro_type_script_index_0_lang.BB9-YIkO.js"></script>

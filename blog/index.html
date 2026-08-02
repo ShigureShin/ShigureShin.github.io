@@ -1,0 +1,145 @@
+<!DOCTYPE html><!--
+所有页面的 HTML 骨架
+    - 防闪烁主题切换脚本（在页面渲染前执行）
+    - 引入全局 CSS
+    - `<slot />` 插槽供子页面填充内容
+--><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>博客</title><meta name="description" content="所有文章"><!--
+      网站图标
+      - SVG（主）：现代浏览器优先，支持主题色/动画/高分辨率无损缩放
+      - ICO（回退）：老旧浏览器（IE / 旧 Edge）不支持 SVG favicon
+      浏览器选择规则：type="image/svg+xml" 声明优先级，不支持的自动跳到 ico
+    --><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="alternate icon" href="/favicon.ico"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.jmhnZfFy.js"></script><!--
+      防闪烁主题切换：同步 inline 脚本，在页面渲染前设置 data-theme
+      只在首次硬加载执行（is:inline 不被 Astro 处理，直接内联到 HTML）
+    --><script>
+      const savedTheme = localStorage.getItem("theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const theme = savedTheme || (prefersDark ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    </script><!--
+      View Transitions 导航时保持主题不丢失
+
+      问题：ClientRouter 导航时获取新页面 HTML，新页面的 <html> 带服务端默认
+      data-theme（不含用户选择）。swap 替换 <html> 后主题被覆盖，is:inline
+      脚本不会重新执行 → 无人从 localStorage 恢复。
+
+      解决：监听 astro:before-swap，在 DOM swap 之前把当前主题写入新文档的 <html>。
+      event.newDocument 是即将替换进来的新文档，修改它不影响当前页面。
+      监听器挂在 document 上（swap 只替换 documentElement，不替换 document 本身），
+      所以首次注册后永久有效。
+    --><script type="module">document.addEventListener(`astro:before-swap`,e=>{let t=document.documentElement.getAttribute(`data-theme`);t&&e.newDocument.documentElement.setAttribute(`data-theme`,t)});</script><link rel="stylesheet" href="/_astro/BaseLayout.D-DT_kRs.css"><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.tag-chip[data-astro-cid-7t72llso]{white-space:nowrap;cursor:pointer;background-color:color-mix(in srgb, var(--tag-color) 15%, transparent);color:var(--tag-color);border:1px solid;border-color:color-mix(in srgb, var(--tag-color) 35%, transparent);border-radius:9999px;align-items:center;font-weight:600;line-height:1.2;text-decoration:none;transition:background-color .2s,border-color .2s,transform .15s;display:inline-flex}.tag-chip[data-astro-cid-7t72llso]:hover{background-color:color-mix(in srgb, var(--tag-color) 28%, transparent);border-color:color-mix(in srgb, var(--tag-color) 55%, transparent);transform:translateY(-1px)}.tag-chip--sm[data-astro-cid-7t72llso]{padding:.125rem .5rem;font-size:.75rem}.tag-chip--md[data-astro-cid-7t72llso]{padding:.25rem .75rem;font-size:.875rem}
+.loading-bar[data-astro-cid-72cpth5s]{animation:1.8s ease-in-out infinite loading-slide}@keyframes loading-slide{0%{transform:translate(-100%)}50%{transform:translate(250%)}to{transform:translate(-100%)}}
+</style><style>[data-astro-transition-scope="astro-ctw6tq44-1"] { view-transition-name: post-astro-blog-setup; }@layer astro { ::view-transition-old(post-astro-blog-setup) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(post-astro-blog-setup) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(post-astro-blog-setup) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(post-astro-blog-setup) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-ctw6tq44-1"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-ctw6tq44-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-ctw6tq44-1"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-ctw6tq44-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-ctw6tq44-1"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-ctw6tq44-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-ctw6tq44-1"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-ctw6tq44-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-ctw6tq44-2"] { view-transition-name: post-hello-world; }@layer astro { ::view-transition-old(post-hello-world) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(post-hello-world) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(post-hello-world) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(post-hello-world) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-ctw6tq44-2"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-ctw6tq44-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-ctw6tq44-2"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-ctw6tq44-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-ctw6tq44-2"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-ctw6tq44-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-ctw6tq44-2"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-ctw6tq44-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style></head><body style="background-image: url('/background.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed; min-height: 100vh;"><!-- 背景遮罩 --><!-- 深色与浅色模式调整为不同遮罩程度 --><!-- 是否渲染遮罩由 site.disableOverlay 控制（默认开启，保持阅读可读性） --><!-- 页面内容插槽 --><!-- 内容层：z-10 在遮罩之上 --><!--
+        不需要 pt-X 给 navbar 占位：Navbar 自己是 sticky 元素，正常参与文档流，
+        在它的源位置（body 顶部）就占满 64px 高，sticky 触发后再贴到 viewport 顶。
+    --><div class="relative z-10"><!--
+    全站 sticky 导航栏
+
+    - sticky top-0 z-30：滚动时吸顶，z-30 高于内容层（默认 z-auto）
+    - 普通页面：bg-base-100/80 backdrop-blur-md border-b shadow-sm → 半透背景 + 模糊 + 底边框 + 阴影
+    - 首页透明模式：去掉 bg/border/shadow，按钮直接浮在背景图上（更干净）
+    - h-16 (64px) + flex items-center：固定高度，items 垂直居中，不会被内容撑高
+
+    与 BaseLayout 的关系：
+    - sticky 元素本身参与 normal flow，占 64px 高度
+    - 不需要在 BaseLayout 加 pt-X 占位（sticky 自己就是占位）
+    - TOC 卡片 top-24 (96px) - navbar 高度 64px = 32px 上间距，匹配"小空间"
+--><header class="sticky top-0 z-30 h-16 bg-base-100/80 backdrop-blur-md border-b border-base-200 shadow-sm"><nav class="max-w-6xl mx-auto px-4 h-full flex items-center justify-center gap-2"><a href="/" class="btn btn-ghost btn-sm">首页</a><a href="/blog" class="btn btn-ghost btn-sm btn-active">博客</a><a href="/tags" class="btn btn-ghost btn-sm">标签</a><a href="/search" class="btn btn-ghost btn-sm">搜索</a><a href="/about" class="btn btn-ghost btn-sm">关于</a></nav></header><main class="min-h-screen max-w-3xl mx-auto px-4 py-12"><!-- 页面标题 --><header class="mb-8"><h1 class="text-3xl font-bold mb-2">博客</h1><p class="opacity-60">共 2 篇文章</p></header><!-- 文章列表 + 空状态 --><div class="grid gap-6"><!--
+  卡片整体可点击 + 标签独立可点击：Frosti 经典模式
+  - 整张卡片是 <article>，不是 <a>（避免嵌套 <a>）
+  - 整张卡片点击区由绝对定位的 <a> 伪元素覆盖（z-10）
+  - 内容区 pointer-events-none → 点击穿透到下层 <a>（卡片链接）
+  - 标签区 pointer-events-auto → Tag 的 <a> 自己接收点击
+  - 不能用嵌套 <a>：HTML 规范禁止，浏览器会自动修复
+    （关闭外层 <a> + 把内层提到外层外），导致卡片宽度异常 + 标签跑出卡片 + 卡片链接丢失
+--><article class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow
+         group block overflow-hidden relative"><!-- 整张卡片可点击：absolute 链接覆盖 --><a data-astro-transition-scope="astro-ctw6tq44-1" href="/blog/astro-blog-setup" aria-label="Astro 博客搭建记录" class="absolute inset-0 z-10"></a><img src="/background.jpg" alt="Astro 博客搭建记录" class="absolute inset-0 w-full h-full object-cover transition-transform
+                duration-500 group-hover:scale-105 pointer-events-none" style="clip-path: polygon(55% 0, 100% 0, 100% 100%, 35% 100%);"><div class="card-body p-5 relative z-20 pointer-events-none max-w-[45%]"><!-- 标题 --><h2 class="card-title text-xl group-hover:text-primary transition-colors">Astro 博客搭建记录</h2><!-- 描述 --><p class="text-sm opacity-70 line-clamp-2">从零开始用 Astro 7 + Tailwind v4 + daisyUI v5 搭建个人博客的过程记录</p><!-- 日期 --><div class="flex items-center gap-2 text-sm opacity-60 mb-1"><svg width="1em" height="1em" class="w-4 h-4" data-icon="lucide:calendar"><symbol id="ai:lucide:calendar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M8 2v4m8-4v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></g></symbol><use href="#ai:lucide:calendar"></use></svg><time datetime="2026-08-01T00:00:00.000Z">2026/08/01</time></div><!--
+        标签区 pointer-events-auto：让 Tag 的 <a> 接收点击
+        z-30 比外层 <a> 高 → 标签区域的事件不会被卡片链接抢走
+        --><div class="flex flex-wrap gap-1 mt-2 relative z-30 pointer-events-auto"><a href="/tags#Astro" class="tag-chip tag-chip--sm" style="--tag-color: var(--color-success);" data-astro-cid-7t72llso>#Astro</a><a href="/tags#%E5%89%8D%E7%AB%AF" class="tag-chip tag-chip--sm" style="--tag-color: var(--color-info);" data-astro-cid-7t72llso>#前端</a><a href="/tags#%E5%8D%9A%E5%AE%A2" class="tag-chip tag-chip--sm" style="--tag-color: var(--color-primary);" data-astro-cid-7t72llso>#博客</a></div></div></article><!--
+  卡片整体可点击 + 标签独立可点击：Frosti 经典模式
+  - 整张卡片是 <article>，不是 <a>（避免嵌套 <a>）
+  - 整张卡片点击区由绝对定位的 <a> 伪元素覆盖（z-10）
+  - 内容区 pointer-events-none → 点击穿透到下层 <a>（卡片链接）
+  - 标签区 pointer-events-auto → Tag 的 <a> 自己接收点击
+  - 不能用嵌套 <a>：HTML 规范禁止，浏览器会自动修复
+    （关闭外层 <a> + 把内层提到外层外），导致卡片宽度异常 + 标签跑出卡片 + 卡片链接丢失
+--><article class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow
+         group block overflow-hidden relative"><!-- 整张卡片可点击：absolute 链接覆盖 --><a data-astro-transition-scope="astro-ctw6tq44-2" href="/blog/hello-world" aria-label="Hello World" class="absolute inset-0 z-10"></a><img src="/background.jpg" alt="Hello World" class="absolute inset-0 w-full h-full object-cover transition-transform
+                duration-500 group-hover:scale-105 pointer-events-none" style="clip-path: polygon(55% 0, 100% 0, 100% 100%, 35% 100%);"><div class="card-body p-5 relative z-20 pointer-events-none max-w-[45%]"><!-- 标题 --><h2 class="card-title text-xl group-hover:text-primary transition-colors">Hello World</h2><!-- 描述 --><p class="text-sm opacity-70 line-clamp-2">第一篇博客文章</p><!-- 日期 --><div class="flex items-center gap-2 text-sm opacity-60 mb-1"><svg width="1em" height="1em" viewBox="0 0 24 24" class="w-4 h-4" data-icon="lucide:calendar"><use href="#ai:lucide:calendar"></use></svg><time datetime="2026-07-31T00:00:00.000Z">2026/07/31</time></div><!--
+        标签区 pointer-events-auto：让 Tag 的 <a> 接收点击
+        z-30 比外层 <a> 高 → 标签区域的事件不会被卡片链接抢走
+        --><div class="flex flex-wrap gap-1 mt-2 relative z-30 pointer-events-auto"><a href="/tags#%E9%9A%8F%E7%AC%94" class="tag-chip tag-chip--sm" style="--tag-color: var(--color-success);" data-astro-cid-7t72llso>#随笔</a></div></div></article></div></main></div><!-- 主题切换按钮 --><!-- 主题切换组件 --><button id="theme-toggle" class="btn btn-ghost btn-circle fixed top-4 right-4 z-50" aria-label="切换主题"><!-- 深色模式下显示太阳（点击切回浅色） --><svg width="1em" height="1em" class="w-5 h-5 hidden dark:block" data-icon="lucide:sun"><symbol id="ai:lucide:sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></symbol><use href="#ai:lucide:sun"></use></svg><!-- 浅色模式下显示月亮（点击切到深色） --><svg width="1em" height="1em" class="w-5 h-5 block dark:hidden" data-icon="lucide:moon"><symbol id="ai:lucide:moon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></symbol><use href="#ai:lucide:moon"></use></svg></button><script type="module">function e(){let e=document.documentElement,t=e.getAttribute(`data-theme`)===`dark`?`light`:`dark`;e.setAttribute(`data-theme`,t),localStorage.setItem(`theme`,t)}function t(){document.getElementById(`theme-toggle`)?.addEventListener(`click`,e)}t(),document.addEventListener(`astro:page-load`,t);</script></body></html>

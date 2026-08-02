@@ -1,0 +1,126 @@
+<!DOCTYPE html><!--
+所有页面的 HTML 骨架
+    - 防闪烁主题切换脚本（在页面渲染前执行）
+    - 引入全局 CSS
+    - `<slot />` 插槽供子页面填充内容
+--><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Hello World</title><meta name="description" content="第一篇博客文章"><!--
+      网站图标
+      - SVG（主）：现代浏览器优先，支持主题色/动画/高分辨率无损缩放
+      - ICO（回退）：老旧浏览器（IE / 旧 Edge）不支持 SVG favicon
+      浏览器选择规则：type="image/svg+xml" 声明优先级，不支持的自动跳到 ico
+    --><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="alternate icon" href="/favicon.ico"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.jmhnZfFy.js"></script><!--
+      防闪烁主题切换：同步 inline 脚本，在页面渲染前设置 data-theme
+      只在首次硬加载执行（is:inline 不被 Astro 处理，直接内联到 HTML）
+    --><script>
+      const savedTheme = localStorage.getItem("theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const theme = savedTheme || (prefersDark ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    </script><!--
+      View Transitions 导航时保持主题不丢失
+
+      问题：ClientRouter 导航时获取新页面 HTML，新页面的 <html> 带服务端默认
+      data-theme（不含用户选择）。swap 替换 <html> 后主题被覆盖，is:inline
+      脚本不会重新执行 → 无人从 localStorage 恢复。
+
+      解决：监听 astro:before-swap，在 DOM swap 之前把当前主题写入新文档的 <html>。
+      event.newDocument 是即将替换进来的新文档，修改它不影响当前页面。
+      监听器挂在 document 上（swap 只替换 documentElement，不替换 document 本身），
+      所以首次注册后永久有效。
+    --><script type="module">document.addEventListener(`astro:before-swap`,e=>{let t=document.documentElement.getAttribute(`data-theme`);t&&e.newDocument.documentElement.setAttribute(`data-theme`,t)});</script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.tag-chip[data-astro-cid-7t72llso]{white-space:nowrap;cursor:pointer;background-color:color-mix(in srgb, var(--tag-color) 15%, transparent);color:var(--tag-color);border:1px solid;border-color:color-mix(in srgb, var(--tag-color) 35%, transparent);border-radius:9999px;align-items:center;font-weight:600;line-height:1.2;text-decoration:none;transition:background-color .2s,border-color .2s,transform .15s;display:inline-flex}.tag-chip[data-astro-cid-7t72llso]:hover{background-color:color-mix(in srgb, var(--tag-color) 28%, transparent);border-color:color-mix(in srgb, var(--tag-color) 55%, transparent);transform:translateY(-1px)}.tag-chip--sm[data-astro-cid-7t72llso]{padding:.125rem .5rem;font-size:.75rem}.tag-chip--md[data-astro-cid-7t72llso]{padding:.25rem .75rem;font-size:.875rem}
+</style><link rel="stylesheet" href="/_astro/BaseLayout.D-DT_kRs.css"><style>.toc-link[data-astro-cid-lkw5wmmf].active{color:var(--p);opacity:1;font-weight:500}
+</style><style>[data-astro-transition-scope="astro-vsev7mas-1"] { view-transition-name: post-hello-world; }@layer astro { ::view-transition-old(post-hello-world) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(post-hello-world) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(post-hello-world) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(post-hello-world) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-vsev7mas-1"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-vsev7mas-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-vsev7mas-1"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-vsev7mas-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-vsev7mas-1"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-vsev7mas-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-vsev7mas-1"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-vsev7mas-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style></head><body style="background-image: url('/background.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed; min-height: 100vh;"><!-- 背景遮罩 --><!-- 深色与浅色模式调整为不同遮罩程度 --><!-- 是否渲染遮罩由 site.disableOverlay 控制（默认开启，保持阅读可读性） --><!-- 页面内容插槽 --><!-- 内容层：z-10 在遮罩之上 --><!--
+        不需要 pt-X 给 navbar 占位：Navbar 自己是 sticky 元素，正常参与文档流，
+        在它的源位置（body 顶部）就占满 64px 高，sticky 触发后再贴到 viewport 顶。
+    --><div class="relative z-10"><!--
+    全站 sticky 导航栏
+
+    - sticky top-0 z-30：滚动时吸顶，z-30 高于内容层（默认 z-auto）
+    - 普通页面：bg-base-100/80 backdrop-blur-md border-b shadow-sm → 半透背景 + 模糊 + 底边框 + 阴影
+    - 首页透明模式：去掉 bg/border/shadow，按钮直接浮在背景图上（更干净）
+    - h-16 (64px) + flex items-center：固定高度，items 垂直居中，不会被内容撑高
+
+    与 BaseLayout 的关系：
+    - sticky 元素本身参与 normal flow，占 64px 高度
+    - 不需要在 BaseLayout 加 pt-X 占位（sticky 自己就是占位）
+    - TOC 卡片 top-24 (96px) - navbar 高度 64px = 32px 上间距，匹配"小空间"
+--><header class="sticky top-0 z-30 h-16 bg-base-100/80 backdrop-blur-md border-b border-base-200 shadow-sm"><nav class="max-w-6xl mx-auto px-4 h-full flex items-center justify-center gap-2"><a href="/" class="btn btn-ghost btn-sm">首页</a><a href="/blog" class="btn btn-ghost btn-sm btn-active">博客</a><a href="/tags" class="btn btn-ghost btn-sm">标签</a><a href="/search" class="btn btn-ghost btn-sm">搜索</a><a href="/about" class="btn btn-ghost btn-sm">关于</a></nav></header><article class="min-h-screen max-w-6xl mx-auto px-4 py-12 space-y-6" data-pagefind-body><!--
+    relative + overflow-hidden 是 banner 图斜切的前提：
+    - relative：banner 图 absolute 相对 header 定位
+    - overflow-hidden：banner 图溢出部分被裁切（自然只露一部分）
+    --><header data-astro-transition-scope="astro-vsev7mas-1" class="relative bg-base-100 rounded-3xl shadow-lg p-8 overflow-hidden"><!--
+            条件渲染：有 banner 图才显示。
+            clip-path polygon 四个点：右上 / 右上角 / 右下角 / 底部 40%
+            顶部 60% → 底部 40%，斜率 20%，右边露出梯形。
+        --><img src="/background.jpg" alt="Hello World" class="absolute inset-0 w-full h-full object-cover pointer-events-none" style="clip-path: polygon(60% 0, 100% 0, 100% 100%, 40% 100%);"><!--
+            z-10 让文字浮在 banner 图之上。
+            max-w-[55%] 限制文字区只占卡片左 55%，不撞斜切线起点（60%）。
+        --><div class="relative z-10 max-w-[55%]"><h1 class="text-3xl md:text-4xl font-bold mb-4" data-pagefind-meta="title">Hello World</h1><p class="text-lg opacity-70 mb-4" data-pagefind-meta="description">第一篇博客文章</p><div class="flex flex-wrap items-center gap-4 text-sm opacity-60"><div class="flex items-center gap-1"><svg width="1em" height="1em" class="w-4 h-4" data-icon="lucide:calendar"><symbol id="ai:lucide:calendar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M8 2v4m8-4v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></g></symbol><use href="#ai:lucide:calendar"></use></svg><time datetime="2026-07-31T00:00:00.000Z" data-pagefind-meta="date">2026/07/31</time></div></div><div class="flex flex-wrap gap-2 mt-4"><span class="badge badge-primary badge-sm">开始</span><a href="/tags#%E9%9A%8F%E7%AC%94" class="tag-chip tag-chip--sm" style="--tag-color: var(--color-success);" data-pagefind-filter="tag:随笔" data-astro-cid-7t72llso>#随笔</a></div></div></header><!-- TOC + 正文：grid 两栏
+             注意：不要加 items-start！
+             items-start 让 wrapper 按内容高（约 75vh），
+             sticky 元素的"粘性范围"= 父级高度，超出 wrapper 底就松脱滑走。
+             保持默认 stretch：wrapper 这个空 div 无视觉，被拉伸到行高无副作用，
+             但 sticky 能在整个 row 范围内持续吸顶到正文末尾。
+             正文卡片单独 self-start，按内容显示（避免背景延伸到空白）。 --><div class="content-expand grid grid-cols-1 lg:grid-cols-4 gap-8"><!--
+                TOC sticky 卡片，留出上下小空间：
+                - top-24 = navbar 5rem (80px) + 顶部间隙 1rem (16px) = 96px
+                - max-h-[calc(100vh-7rem)] = 顶部 6rem + 底部 1rem = 100vh - 112px
+                → 卡片顶在 navbar 下方 16px，卡片底在 viewport 底上方 16px
+                → 长目录封顶后内部 overflow-y-auto 滚动，短目录按内容自适应
+                父 wrapper 默认 stretch 到行高 → sticky 粘性范围 = 正文的全高度
+            --><div class="hidden lg:block" data-pagefind-ignore><div class="sticky top-24 max-h-[calc(100vh-7rem)] flex flex-col overflow-hidden bg-base-100 rounded-2xl p-4 shadow-sm"><!--
+  高度由外层 sticky 元素（[slug].astro）控制：
+  sticky div max-h-[calc(100vh-5rem)] flex flex-col，TOC 作为唯一子项。
+  nav 在 sticky 里用 flex-1 min-h-0 占满（不用 h-full——h-full 在父级高度非确定时退化成 auto，
+  flex 子项拿不到高度，flex-1 也跟着失效，overflow-y-auto 不滚动、列表溢出卡片底）。
+  flex 布局分配：
+    - h3 flex-none 按内容高度，标题固定不移动
+    - toc-list flex-1 min-h-0 占满剩余高度，内部滚动
+  min-h-0 是 flex 子项必加——默认 min-height:auto 按内容撑开，overflow 不生效
+--><nav class="toc-nav relative flex-1 min-h-0 flex flex-col" data-astro-cid-lkw5wmmf><h3 class="text-sm font-semibold opacity-60 mb-3 uppercase tracking-wide flex-none" data-astro-cid-lkw5wmmf>大纲</h3><!-- 滑动指示器：绝对定位，JS 动画移动到激活项，cubic-bezier 缓动 --><div id="toc-indicator" class="absolute left-0 bg-primary/10 rounded-lg opacity-0 pointer-events-none" style="transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);" data-astro-cid-lkw5wmmf></div><!-- 列表区：flex-1 占满剩余高度，overflow-y-auto 内部滚动，标题始终可见 --><div id="toc-list" class="flex-1 min-h-0 overflow-y-auto" data-astro-cid-lkw5wmmf><ul class="space-y-0.5 text-sm relative" data-astro-cid-lkw5wmmf><li data-astro-cid-lkw5wmmf><a href="#hello-world" data-slug="hello-world" class="toc-link block py-1.5 px-2 rounded-lg opacity-60 hover:opacity-100 transition-colors" style="padding-left: 12px;" data-astro-cid-lkw5wmmf>Hello World</a></li><li data-astro-cid-lkw5wmmf><a href="#代码示例" data-slug="代码示例" class="toc-link block py-1.5 px-2 rounded-lg opacity-60 hover:opacity-100 transition-colors" style="padding-left: 12px;" data-astro-cid-lkw5wmmf>代码示例</a></li></ul></div></nav><script type="module">function e(){let e=document.querySelector(`.toc-nav`),t=document.getElementById(`toc-indicator`),n=document.getElementById(`toc-list`),r=Array.from(document.querySelectorAll(`.toc-link`));if(!e||!t||r.length===0)return;let i=r.map(e=>{let t=e.getAttribute(`data-slug`);return t?document.getElementById(t):null}).filter(Boolean);if(i.length===0)return;let a=null,o=!1;function s(e){if(!n)return;let t=n.getBoundingClientRect(),r=e.getBoundingClientRect();r.top<t.top?n.scrollTop+=r.top-t.top:r.bottom>t.bottom&&(n.scrollTop+=r.bottom-t.bottom)}function c(n,r=!0){if(!n)return;t.style.transition=r?`all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)`:`none`;let i=n.getBoundingClientRect(),a=e.getBoundingClientRect();t.style.top=`${i.top-a.top}px`,t.style.height=`${i.height}px`,t.style.width=`${i.width}px`,t.style.opacity=`1`}function l(e,t=!0){a!==e&&(a?.classList.remove(`active`),e.classList.add(`active`),a=e,s(e),c(e,t))}function u(){if(o)return;let e=window.scrollY+96,t=0;for(let n=0;n<i.length&&i[n].getBoundingClientRect().top+window.scrollY<=e;n++)t=n;l(r[t],!1)}let d=!1;window.addEventListener(`scroll`,()=>{d||=(requestAnimationFrame(()=>{u(),d=!1}),!0)},{passive:!0}),n?.addEventListener(`scroll`,()=>{a&&c(a,!1)},{passive:!0}),e.addEventListener(`click`,e=>{let t=e.target.closest(`a`);if(!t)return;e.preventDefault();let n=t.getAttribute(`data-slug`);if(!n)return;let r=document.getElementById(n);if(!r)return;l(t,!0),o=!0;let i=r.getBoundingClientRect().top+window.scrollY-96;window.scrollTo({top:i,behavior:`smooth`}),history.pushState(null,``,`#${n}`),setTimeout(()=>{o=!1},1e3)});function f(){u(),!a&&r.length>0&&l(r[0],!1)}document.readyState===`complete`?f():window.addEventListener(`load`,f,{once:!0}),window.addEventListener(`resize`,()=>{a&&c(a,!1)})}e(),document.addEventListener(`astro:page-load`,e);</script></div></div><!-- 卡片 2：正文区
+                 self-start 不被 grid stretch 拉伸，按内容高度显示 --><div class="lg:col-span-3 self-start bg-base-100 rounded-3xl shadow-lg p-8 prose max-w-none prose-headings:scroll-mt-20 prose-h1:text-center"><h1 id="hello-world">Hello World</h1>
+<p>这是第一篇博客文章。Astro 会自动读取 <code>src/content/blog/</code> 下的 Markdown 文件并生成页面。</p>
+<h1 id="代码示例">代码示例</h1>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="cpp"><code><span class="line"><span style="color:#F97583">int</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">()</span></span>
+<span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<!-- 文章结尾：分隔线 + 返回链接 + 萌萌计数器（独立两行布局）
+                     取消 flex 同行：计数器不再被按钮挤压，
+                     w-full max-w-2xl 让 getloli 图片完整展开 6 个角色 --><!-- 文章结尾：分隔线 + 返回博客列表 + footer 装饰图 --><div class="not-prose" data-pagefind-ignore><div class="mt-12 pt-6 border-t border-base-200"><a href="/blog" class="btn btn-ghost btn-sm gap-2"><svg width="1em" height="1em" class="w-4 h-4" data-icon="lucide:arrow-left"><symbol id="ai:lucide:arrow-left" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m12 19l-7-7l7-7m7 7H5"/></symbol><use href="#ai:lucide:arrow-left"></use></svg>返回博客列表</a></div><img src="/footer.png" alt="footer" class="mt-6 block w-full rounded"></div></div></div></article></div><!-- 主题切换按钮 --><!-- 主题切换组件 --><button id="theme-toggle" class="btn btn-ghost btn-circle fixed top-4 right-4 z-50" aria-label="切换主题"><!-- 深色模式下显示太阳（点击切回浅色） --><svg width="1em" height="1em" class="w-5 h-5 hidden dark:block" data-icon="lucide:sun"><symbol id="ai:lucide:sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></symbol><use href="#ai:lucide:sun"></use></svg><!-- 浅色模式下显示月亮（点击切到深色） --><svg width="1em" height="1em" class="w-5 h-5 block dark:hidden" data-icon="lucide:moon"><symbol id="ai:lucide:moon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></symbol><use href="#ai:lucide:moon"></use></svg></button><script type="module">function e(){let e=document.documentElement,t=e.getAttribute(`data-theme`)===`dark`?`light`:`dark`;e.setAttribute(`data-theme`,t),localStorage.setItem(`theme`,t)}function t(){document.getElementById(`theme-toggle`)?.addEventListener(`click`,e)}t(),document.addEventListener(`astro:page-load`,t);</script></body></html>
