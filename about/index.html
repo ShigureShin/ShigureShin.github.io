@@ -27,7 +27,7 @@
       event.newDocument 是即将替换进来的新文档，修改它不影响当前页面。
       监听器挂在 document 上（swap 只替换 documentElement，不替换 document 本身），
       所以首次注册后永久有效。
-    --><script type="module">document.addEventListener(`astro:before-swap`,e=>{let t=document.documentElement.getAttribute(`data-theme`);t&&e.newDocument.documentElement.setAttribute(`data-theme`,t)});</script><link rel="stylesheet" href="/_astro/BaseLayout.DI09Y_iR.css"><style>.loading-bar[data-astro-cid-72cpth5s]{animation:1.8s ease-in-out infinite loading-slide}@keyframes loading-slide{0%{transform:translate(-100%)}50%{transform:translate(250%)}to{transform:translate(-100%)}}
+    --><script type="module">document.addEventListener(`astro:before-swap`,e=>{let t=document.documentElement.getAttribute(`data-theme`);t&&e.newDocument.documentElement.setAttribute(`data-theme`,t)});</script><link rel="stylesheet" href="/_astro/BaseLayout.DGFS5del.css"><style>.loading-bar[data-astro-cid-72cpth5s]{animation:1.8s ease-in-out infinite loading-slide}@keyframes loading-slide{0%{transform:translate(-100%)}50%{transform:translate(250%)}to{transform:translate(-100%)}}
 </style></head><body style="background-image: url('/background.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed; min-height: 100vh;"><!-- 背景遮罩 --><!-- 深色与浅色模式调整为不同遮罩程度 --><!-- 是否渲染遮罩由 site.disableOverlay 控制（默认开启，保持阅读可读性） --><!-- 页面内容插槽 --><!-- 内容层：z-10 在遮罩之上 --><!--
         不需要 pt-X 给 navbar 占位：Navbar 自己是 sticky 元素，正常参与文档流，
         在它的源位置（body 顶部）就占满 64px 高，sticky 触发后再贴到 viewport 顶。
